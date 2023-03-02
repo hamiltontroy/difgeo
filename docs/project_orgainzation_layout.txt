@@ -1,0 +1,53 @@
+The goal of this project is to make a highly efficient and fast server for
+the linux operating system. There will be low level server "glue" code
+which is meant for interfacing with the operating system, and dealing with
+sockets and files and whatnot, basically stuff that should be guaranteed
+to be the fastest possible implementation. The glue code will use a callback
+format, where all the low level i/o stuff can be handled by the glue code, and the
+callback function will be called when the glue is done with i/o.
+
+this allows for the server programs to be programmed in a non-complex way, but
+can still be guaranteed to be insanely fast.
+
+The way that the mid end developer can actually build websites will be done in
+the following way.
+
+There will be an intro function, where after a connection is established,
+the intro function will be called and will have the following function declaration.
+
+void intro(low::Peer peer);
+
+peer is an object (class) which represents a connection to a peer.
+peer can be used for various functions relating to sending and receiving data from
+clients.
+
+the function body for intro can be programmed in whatever way the mid end sees fit.
+
+A good convention for reading and writing with clients is to have the actual io
+function be the last function to be called in the body of the outer calling function.
+have a callback function be registered, and pass minimal data to the callback function.
+
+io functions: // read documentation on these functions.
+void push();
+void pull();
+
+push and pull will simply register then execute io operations under the hood, then upon
+the io operation completing, a callback function will be called with any potential arguments
+which were registered to be passed in.
+
+// pull data from a peer
+// calls a callback function which takes a peer and the vector with the bytes
+void pull(low::Peer, void (*)(low::Peer, std::vector<std::byte>);
+
+// same as above, except the callback can have stateful arguments.
+template <typename T>
+void pull(low::Peer, void (*)(low::Peer, std::vector<std::bytes>, T), T);
+
+// push data to a peer
+// it takes a vector, which will be deallocated upon io completion
+// calls a callback function when io finishes
+void push(low::Peer, std::vector<std::byte>, void (*)(low::Peer, std::vector<std::byte>);
+
+// same as above, except the callback will take an argument
+template <typename T>
+void push(low::Peer, std::vector<std::byte>, void (*)(low::Peer, std::vector<std::byte>, T), T);

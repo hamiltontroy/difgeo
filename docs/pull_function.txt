@@ -1,0 +1,11 @@
+push and pull will simply register then execute io operations under the hood, then upon
+the io operation completing, a callback function will be called with any potential arguments
+which were registered to be passed in.
+
+// pull data from a peer
+// calls a callback function which takes a peer and the vector with the bytes
+void pull(low::Peer, void (*)(low::Peer, std::vector<std::byte>);
+
+// same as above, except the callback can have stateful arguments.
+template <typename T>
+void pull(low::Peer, void (*)(low::Peer, std::vector<std::bytes>, T), T);

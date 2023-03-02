@@ -1,0 +1,16 @@
+push and pull will simply register then execute io operations under the hood, then upon
+the io operation completing, a callback function will be called with any potential arguments
+which were registered to be passed in.
+
+// push data to a peer
+// it takes a vector, which will be deallocated upon io completion
+// calls a callback function when io finishes
+void push(low::Peer, std::vector<std::byte>, void (*)(low::Peer, std::vector<std::byte>);
+
+// same as above, except the callback will take an argument
+template <typename T>
+void push(low::Peer, std::vector<std::byte>, void (*)(low::Peer, std::vector<std::byte>, T), T);
+
+// same as above, except there will be no callback function, the vector will simply be deallocated,
+// and the peer connection will be terminated.
+void push(low::Peer, std::vector<std::byte>);
